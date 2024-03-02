@@ -1,4 +1,5 @@
 ﻿using EcommerceWeb.Data;
+using EcommerceWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceWeb.Controllers
@@ -14,6 +15,24 @@ namespace EcommerceWeb.Controllers
         {
             var data = _db.Categories.OrderBy(x => x.DisplayOrder).ToList();
             return View(data);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateCategory(Category data)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.Categories.Add(data);
+                _db.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+
         }
     }
 }
