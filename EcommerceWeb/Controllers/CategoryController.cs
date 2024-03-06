@@ -23,16 +23,72 @@ namespace EcommerceWeb.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateCategory(Category data)
+        public IActionResult Create(Category data)
         {
             if (ModelState.IsValid)
             {
                 _db.Categories.Add(data);
                 _db.SaveChanges();
+                TempData["success"] = "Created successfully";
                 return RedirectToAction(nameof(Index));
             }
             return View();
-
         }
+
+        public IActionResult Edit(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            var data = _db.Categories.FirstOrDefault(x => x.Id == id);
+            if (data == null)
+            {
+                return NotFound();
+            }
+            return View(data);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Category data)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.Categories.Update(data);
+                _db.SaveChanges();
+                TempData["success"] = "Updated successfully";
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+
+        public IActionResult Delete(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            var data = _db.Categories.FirstOrDefault(x => x.Id == id);
+            if (data == null)
+            {
+                return NotFound();
+            }
+            _db.Categories.Remove(data);
+            _db.SaveChanges();
+            TempData["success"] = "Deleted successfully";
+            return RedirectToAction(nameof(Index));
+        }
+
+        //[HttpPost]
+        //public IActionResult Delete(Category data)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _db.Categories.Remove(data);
+        //        _db.SaveChanges();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View();
+        //}
     }
 }

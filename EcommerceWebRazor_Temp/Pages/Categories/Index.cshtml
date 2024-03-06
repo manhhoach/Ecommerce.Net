@@ -1,6 +1,6 @@
-﻿@model List<Category>
+﻿@page
+@model EcommerceWebRazor_Temp.Pages.Categories.IndexModel
 
-<partial name="_Notification"></partial>
 
 <div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
@@ -15,7 +15,7 @@
             <div class="col-6">
             </div>
             <div class="col-6 text-end">
-                <a asp-controller="Category" asp-action="Create" class="btn btn-success">
+                <a asp-page="Categories/create" class="btn btn-success">
                     <i class="bi bi-plus-circle"></i>  Create New Category
                 </a>
             </div>
@@ -34,7 +34,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var obj in Model.OrderBy(u => u.DisplayOrder))
+                @foreach (var obj in Model.CategoryList.OrderBy(u => u.DisplayOrder))
                 {
                     <tr>
                         <td>@obj.Name</td>
@@ -58,4 +58,3 @@
 
     </div>
 </div>
-
