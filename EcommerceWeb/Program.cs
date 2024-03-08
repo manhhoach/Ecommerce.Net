@@ -1,5 +1,6 @@
-using Ecommerce.DataAccess.CategoryRepository;
 using Ecommerce.DataAccess.Data;
+using Ecommerce.DataAccess.IRepository;
+using Ecommerce.DataAccess.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +12,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 
@@ -44,8 +45,13 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+      name: "areas",
+      pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}"
+);
 
 app.Run();

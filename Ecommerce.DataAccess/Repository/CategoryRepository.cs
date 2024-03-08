@@ -1,8 +1,8 @@
 ﻿using Ecommerce.DataAccess.Data;
-using Ecommerce.DataAccess.Repository;
+using Ecommerce.DataAccess.IRepository;
 using Ecommerce.Models.Models;
 
-namespace Ecommerce.DataAccess.CategoryRepository
+namespace Ecommerce.DataAccess.Repository
 {
     public class CategoryRepository : Repository<Category>, ICategoryRepository
     {
@@ -12,10 +12,6 @@ namespace Ecommerce.DataAccess.CategoryRepository
             _db = db;
         }
 
-        public void Save()
-        {
-            _db.SaveChanges();
-        }
 
         //public override void Update(Category data)
         //{

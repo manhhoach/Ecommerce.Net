@@ -1,20 +1,21 @@
 ﻿
-using Ecommerce.DataAccess.CategoryRepository;
+using Ecommerce.DataAccess.IRepository;
 using Ecommerce.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EcommerceWeb.Controllers
+namespace EcommerceWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
-        private readonly ICategoryRepository _categoryRepository;
-        public CategoryController(ICategoryRepository categoryRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            _categoryRepository = categoryRepository;
+            _unitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
-            var data = _categoryRepository.GetAll().OrderBy(x => x.DisplayOrder).ToList();
+            var data = _unitOfWork._CategoryRepository.GetAll().OrderBy(x => x.DisplayOrder).ToList();
             return View(data);
         }
 
@@ -28,8 +29,8 @@ namespace EcommerceWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                _categoryRepository.Add(data);
-                _categoryRepository.Save();
+                _unitOfWork._CategoryRepository.Add(data);
+                _unitOfWork.Save();
                 TempData["success"] = "Created successfully";
                 return RedirectToAction(nameof(Index));
             }
@@ -42,7 +43,7 @@ namespace EcommerceWeb.Controllers
             {
                 return NotFound();
             }
-            var data = _categoryRepository.Get(x => x.Id == id);
+            var data = _unitOfWork._CategoryRepository.Get(x => x.Id == id);
             if (data == null)
             {
                 return NotFound();
@@ -55,8 +56,8 @@ namespace EcommerceWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                _categoryRepository.Update(data);
-                _categoryRepository.Save();
+                _unitOfWork._CategoryRepository.Update(data);
+                _unitOfWork.Save();
                 TempData["success"] = "Updated successfully";
                 return RedirectToAction(nameof(Index));
             }
@@ -69,13 +70,13 @@ namespace EcommerceWeb.Controllers
             {
                 return NotFound();
             }
-            var data = _categoryRepository.Get(x => x.Id == id);
+            var data = _unitOfWork._CategoryRepository.Get(x => x.Id == id);
             if (data == null)
             {
                 return NotFound();
             }
-            _categoryRepository.Delete(data);
-            _categoryRepository.Save();
+            _unitOfWork._CategoryRepository.Delete(data);
+            _unitOfWork.Save();
             TempData["success"] = "Deleted successfully";
             return RedirectToAction(nameof(Index));
         }

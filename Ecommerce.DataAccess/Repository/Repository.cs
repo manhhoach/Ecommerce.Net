@@ -1,4 +1,5 @@
 ﻿using Ecommerce.DataAccess.Data;
+using Ecommerce.DataAccess.IRepository;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
