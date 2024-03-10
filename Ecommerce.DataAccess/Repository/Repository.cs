@@ -34,7 +34,7 @@ namespace Ecommerce.DataAccess.Repository
             _dbSet.RemoveRange(entities);
         }
 
-        public T Get(Expression<Func<T, bool>> filter)
+        public virtual T Get(Expression<Func<T, bool>> filter)
         {
             return _dbSet.Where(filter).FirstOrDefault();
         }
