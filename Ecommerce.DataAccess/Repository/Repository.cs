@@ -39,7 +39,7 @@ namespace Ecommerce.DataAccess.Repository
             return _dbSet.Where(filter).FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll()
+        public virtual IEnumerable<T> GetAll()
         {
             return _dbSet.ToList();
         }

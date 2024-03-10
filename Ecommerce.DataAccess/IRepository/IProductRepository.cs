@@ -4,5 +4,6 @@ namespace Ecommerce.DataAccess.IRepository
 {
     public interface IProductRepository : IRepository<Product>
     {
+
     }
 }

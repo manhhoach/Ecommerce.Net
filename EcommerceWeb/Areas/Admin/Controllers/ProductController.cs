@@ -2,6 +2,7 @@
 using Ecommerce.DataAccess.IRepository;
 using Ecommerce.Models.Models;
 using Ecommerce.Models.ViewModels;
+using Ecommerce.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -20,7 +21,6 @@ namespace EcommerceWeb.Areas.Admin.Controllers
         public IActionResult Index()
         {
             var data = _unitOfWork._ProductRepository.GetAll().ToList();
-
             return View(data);
         }
 
@@ -135,5 +135,32 @@ namespace EcommerceWeb.Areas.Admin.Controllers
         //    }
         //    return View();
         //}
+
+        #region API call
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var data = _unitOfWork._ProductRepository.GetAll().ToList();
+            return Json(new { data });
+        }
+
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
+            var data = _unitOfWork._ProductRepository.Get(x => x.Id == id);
+            if (data == null)
+            {
+                return Json(new { success = false, message = "Data not found" });
+            }
+
+            string path = Path.Combine(_webHostEnvironment.WebRootPath, data.ImageUrl.TrimStart('/'));
+            FileHelper.Delete(path);
+
+            _unitOfWork._ProductRepository.Delete(data);
+            _unitOfWork.Save();
+
+            return Json(new { success = true, message = "Delete successful" });
+        }
+        #endregion
     }
 }
