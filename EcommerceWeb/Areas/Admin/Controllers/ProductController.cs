@@ -1,7 +1,9 @@
 ﻿
 using Ecommerce.DataAccess.IRepository;
 using Ecommerce.Models.Models;
+using Ecommerce.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EcommerceWeb.Areas.Admin.Controllers
 {
@@ -9,59 +11,100 @@ namespace EcommerceWeb.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ProductController(IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
         public IActionResult Index()
         {
             var data = _unitOfWork._ProductRepository.GetAll().ToList();
+
             return View(data);
         }
 
-        public IActionResult Create()
+        public IActionResult Upsert(int? id)
         {
-            return View();
+            var Category = _unitOfWork._CategoryRepository.GetAll().Select(e => new SelectListItem()
+            {
+                Text = e.Name,
+                Value = e.Id.ToString()
+            }).ToList();
+            ProductVM data = new ProductVM()
+            {
+                Product = new Product(),
+                Category = Category
+            };
+            if (id != 0 && id != null)
+            {
+                data.Product = _unitOfWork._ProductRepository.Get(x => x.Id == id);
+            }
+
+            return View(data);
+        }
+
+        string UploadAndReturnUrl(IFormFile file, string folderName)
+        {
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string folderPath = Path.Combine(wwwRootPath, folderName);
+            if (!System.IO.Directory.Exists(folderPath))
+            {
+                System.IO.Directory.CreateDirectory(folderPath);
+            }
+
+            using (var fileStream = new FileStream(Path.Combine(folderPath, fileName), FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
+            return folderName + fileName;
+
         }
 
         [HttpPost]
-        public IActionResult Create(Product data)
+        public IActionResult Upsert(ProductVM data, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork._ProductRepository.Add(data);
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                if (file != null)
+                {
+                    string imageUrl = UploadAndReturnUrl(file, "images/product/");
+                    if (!string.IsNullOrEmpty(data.Product.ImageUrl))
+                    {
+                        // delete old image
+                        string oldPath = Path.Combine(wwwRootPath, data.Product.ImageUrl.TrimStart('/'));
+                        if (System.IO.File.Exists(oldPath))
+                        {
+                            System.IO.File.Delete(oldPath);
+                        }
+                    }
+                    data.Product.ImageUrl = "/" + imageUrl;
+                }
+                if (data.Product.Id == 0)
+                {
+                    _unitOfWork._ProductRepository.Add(data.Product);
+                }
+                else
+                {
+                    _unitOfWork._ProductRepository.Update(data.Product);
+                }
                 _unitOfWork.Save();
                 TempData["success"] = "Created successfully";
                 return RedirectToAction(nameof(Index));
             }
-            return View();
-        }
+            else
+            {
+                data.Category = _unitOfWork._CategoryRepository.GetAll().Select(e => new SelectListItem()
+                {
+                    Text = e.Name,
+                    Value = e.Id.ToString()
+                }).ToList();
 
-        public IActionResult Edit(int? id)
-        {
-            if (id == null || id == 0)
-            {
-                return NotFound();
+                return View(data);
             }
-            var data = _unitOfWork._ProductRepository.Get(x => x.Id == id);
-            if (data == null)
-            {
-                return NotFound();
-            }
-            return View(data);
-        }
 
-        [HttpPost]
-        public IActionResult Edit(Product data)
-        {
-            if (ModelState.IsValid)
-            {
-                _unitOfWork._ProductRepository.Update(data);
-                _unitOfWork.Save();
-                TempData["success"] = "Updated successfully";
-                return RedirectToAction(nameof(Index));
-            }
-            return View();
         }
 
         public IActionResult Delete(int? id)
