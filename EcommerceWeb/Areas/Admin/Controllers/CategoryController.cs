@@ -1,11 +1,14 @@
 ﻿
 using Ecommerce.DataAccess.IRepository;
 using Ecommerce.Models.Models;
+using Ecommerce.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Admin)]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
