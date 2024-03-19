@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using Ecommerce.DataAccess.IRepository;
 using Ecommerce.Models.Models;
 using Ecommerce.Utility;
 using Microsoft.AspNetCore.Authentication;
@@ -27,6 +28,7 @@ namespace EcommerceWeb.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUnitOfWork _unitOfWork;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -34,7 +36,8 @@ namespace EcommerceWeb.Areas.Identity.Pages.Account
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             RoleManager<IdentityRole> roleManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -43,6 +46,7 @@ namespace EcommerceWeb.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _roleManager = roleManager;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -111,6 +115,9 @@ namespace EcommerceWeb.Areas.Identity.Pages.Account
             [Required]
             public string Name { get; set; }
 
+            public int? CompanyId { get; set; }
+            [ValidateNever]
+            public IEnumerable<SelectListItem> CompanyList { get; set; }
         }
 
 
@@ -125,7 +132,8 @@ namespace EcommerceWeb.Areas.Identity.Pages.Account
             }
             Input = new InputModel()
             {
-                RoleList = _roleManager.Roles.Select(x => x.Name).Select(e => new SelectListItem() { Text = e, Value = e })
+                RoleList = _roleManager.Roles.Select(x => x.Name).Select(e => new SelectListItem() { Text = e, Value = e }),
+                CompanyList = _unitOfWork._CompanyRepository.GetAll().Select(e => new SelectListItem() { Text = e.Name, Value = e.Id.ToString() })
             };
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -148,6 +156,10 @@ namespace EcommerceWeb.Areas.Identity.Pages.Account
                 user.StreetAddress = Input.StreetAddress;
                 user.City = Input.City;
                 user.Name = Input.Name;
+                if (Input.Role == SD.Company)
+                {
+                    user.CompanyId = Input.CompanyId;
+                }
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
@@ -187,8 +199,8 @@ namespace EcommerceWeb.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
-            // If we got this far, something failed, redisplay form
+            Input.RoleList = _roleManager.Roles.Select(x => x.Name).Select(e => new SelectListItem() { Text = e, Value = e });
+            Input.CompanyList = _unitOfWork._CompanyRepository.GetAll().Select(e => new SelectListItem() { Text = e.Name, Value = e.Id.ToString() });
             return Page();
         }
 

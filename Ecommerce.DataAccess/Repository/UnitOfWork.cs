@@ -7,6 +7,7 @@ namespace Ecommerce.DataAccess.Repository
     {
         public ICategoryRepository _CategoryRepository { get; private set; }
         public IProductRepository _ProductRepository { get; private set; }
+        public ICompanyRepository _CompanyRepository { get; private set; }
 
         private readonly AppDbContext _db;
         public UnitOfWork(AppDbContext db)
@@ -14,6 +15,7 @@ namespace Ecommerce.DataAccess.Repository
             _db = db;
             _CategoryRepository = new CategoryRepository(_db);
             _ProductRepository = new ProductRepository(_db);
+            _CompanyRepository = new CompanyRepository(_db);
         }
         public void Save()
         {
