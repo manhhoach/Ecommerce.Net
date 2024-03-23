@@ -13,6 +13,7 @@ namespace Ecommerce.DataAccess.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<Company> Companies { get; set; }
+        public DbSet<Cart> Carts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -49,7 +50,7 @@ namespace Ecommerce.DataAccess.Data
                     Price50=85,
                     Price100=80,
                     CategoryId = 1,
-                    ImageUrl=""
+                    ImageUrl="/images/product/d98b1bc7-dcee-4107-b53b-aa2745361c49.jpg"
                 },
                 new Product
                 {
@@ -63,7 +64,7 @@ namespace Ecommerce.DataAccess.Data
                     Price50 = 25,
                     Price100 = 20,
                     CategoryId = 1,
-                    ImageUrl=""
+                    ImageUrl="/images/product/82cdad45-896e-490d-bfda-f66a97e76b27.jpg"
                 },
                 new Product
                 {
@@ -77,7 +78,7 @@ namespace Ecommerce.DataAccess.Data
                     Price50 = 40,
                     Price100 = 35,
                     CategoryId = 1,
-                    ImageUrl=""
+                    ImageUrl="/images/product/cbeea41c-1511-4580-a8d1-56a6704a3c23.jpg"
                 },
                 new Product
                 {
@@ -91,7 +92,7 @@ namespace Ecommerce.DataAccess.Data
                     Price50 = 60,
                     Price100 = 55,
                     CategoryId = 1,
-                    ImageUrl=""
+                    ImageUrl="/images/product/c37b2c41-9ce9-4528-8efc-565b8629294e.jpg"
                 },
                 new Product
                 {
@@ -105,7 +106,7 @@ namespace Ecommerce.DataAccess.Data
                     Price50 = 25,
                     Price100 = 20,
                     CategoryId = 1,
-                    ImageUrl=""
+                    ImageUrl="/images/product/7c8c9edb-e69c-4ebb-bc15-f63c25630af8.jpg"
                 },
                 new Product
                 {
@@ -119,7 +120,7 @@ namespace Ecommerce.DataAccess.Data
                     Price50 = 22,
                     Price100 = 20,
                     CategoryId = 1,
-                    ImageUrl=""
+                    ImageUrl="/images/product/63b565fa-3123-4205-9d0a-06a9ecf154f4.jpg"
                 }
             });
 

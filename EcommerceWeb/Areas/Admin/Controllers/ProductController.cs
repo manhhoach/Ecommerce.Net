@@ -26,20 +26,24 @@ namespace EcommerceWeb.Areas.Admin.Controllers
 
         public IActionResult Upsert(int? id)
         {
+            var product = new Product();
+            if (id != 0 && id != null)
+            {
+                product = _unitOfWork._ProductRepository.Get(x => x.Id == id);
+            }
             var Category = _unitOfWork._CategoryRepository.GetAll().Select(e => new SelectListItem()
             {
                 Text = e.Name,
-                Value = e.Id.ToString()
+                Value = e.Id.ToString(),
+                Selected = product.CategoryId == e.Id
             }).ToList();
+
             ProductVM data = new ProductVM()
             {
-                Product = new Product(),
+                Product = product,
                 Category = Category
             };
-            if (id != 0 && id != null)
-            {
-                data.Product = _unitOfWork._ProductRepository.Get(x => x.Id == id);
-            }
+
 
             return View(data);
         }

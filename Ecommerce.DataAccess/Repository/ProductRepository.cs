@@ -39,6 +39,7 @@ namespace Ecommerce.DataAccess.Repository
                 ListPrice = e.ListPrice,
                 Price100 = e.Price100,
                 Description = e.Description,
+                CategoryId = e.CategoryId,
                 ISBN = e.ISBN,
                 Price = e.Price,
                 Price50 = e.Price50,

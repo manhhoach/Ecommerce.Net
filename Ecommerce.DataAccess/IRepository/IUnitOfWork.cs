@@ -5,6 +5,8 @@
         ICategoryRepository _CategoryRepository { get; }
         IProductRepository _ProductRepository { get; }
         ICompanyRepository _CompanyRepository { get; }
+        ICartRepository _CartRepository { get; }
+        IAppUserRepository _AppUserRepository { get; }
         void Save();
     }
 }

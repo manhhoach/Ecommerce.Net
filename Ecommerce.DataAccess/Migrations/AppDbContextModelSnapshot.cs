@@ -22,6 +22,33 @@ namespace Ecommerce.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Ecommerce.Models.Models.Cart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Carts");
+                });
+
             modelBuilder.Entity("Ecommerce.Models.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -163,7 +190,6 @@ namespace Ecommerce.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("ListPrice")
@@ -197,7 +223,7 @@ namespace Ecommerce.DataAccess.Migrations
                             CategoryId = 1,
                             Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
                             ISBN = "SWD9999001",
-                            ImageUrl = "",
+                            ImageUrl = "/images/product/d98b1bc7-dcee-4107-b53b-aa2745361c49.jpg",
                             ListPrice = 99.0,
                             Price = 90.0,
                             Price100 = 80.0,
@@ -211,7 +237,7 @@ namespace Ecommerce.DataAccess.Migrations
                             CategoryId = 1,
                             Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
                             ISBN = "CAW777777701",
-                            ImageUrl = "",
+                            ImageUrl = "/images/product/82cdad45-896e-490d-bfda-f66a97e76b27.jpg",
                             ListPrice = 40.0,
                             Price = 30.0,
                             Price100 = 20.0,
@@ -225,7 +251,7 @@ namespace Ecommerce.DataAccess.Migrations
                             CategoryId = 1,
                             Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
                             ISBN = "RITO5555501",
-                            ImageUrl = "",
+                            ImageUrl = "/images/product/cbeea41c-1511-4580-a8d1-56a6704a3c23.jpg",
                             ListPrice = 55.0,
                             Price = 50.0,
                             Price100 = 35.0,
@@ -239,7 +265,7 @@ namespace Ecommerce.DataAccess.Migrations
                             CategoryId = 1,
                             Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
                             ISBN = "WS3333333301",
-                            ImageUrl = "",
+                            ImageUrl = "/images/product/c37b2c41-9ce9-4528-8efc-565b8629294e.jpg",
                             ListPrice = 70.0,
                             Price = 65.0,
                             Price100 = 55.0,
@@ -253,7 +279,7 @@ namespace Ecommerce.DataAccess.Migrations
                             CategoryId = 1,
                             Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
                             ISBN = "SOTJ1111111101",
-                            ImageUrl = "",
+                            ImageUrl = "/images/product/7c8c9edb-e69c-4ebb-bc15-f63c25630af8.jpg",
                             ListPrice = 30.0,
                             Price = 27.0,
                             Price100 = 20.0,
@@ -267,7 +293,7 @@ namespace Ecommerce.DataAccess.Migrations
                             CategoryId = 1,
                             Description = "Praesent vitae sodales libero. Praesent molestie orci augue, vitae euismod velit sollicitudin ac. Praesent vestibulum facilisis nibh ut ultricies.\r\n\r\nNunc malesuada viverra ipsum sit amet tincidunt. ",
                             ISBN = "FOT000000001",
-                            ImageUrl = "",
+                            ImageUrl = "/images/product/63b565fa-3123-4205-9d0a-06a9ecf154f4.jpg",
                             ListPrice = 25.0,
                             Price = 23.0,
                             Price100 = 20.0,
@@ -509,6 +535,25 @@ namespace Ecommerce.DataAccess.Migrations
                     b.HasIndex("CompanyId");
 
                     b.HasDiscriminator().HasValue("AppUser");
+                });
+
+            modelBuilder.Entity("Ecommerce.Models.Models.Cart", b =>
+                {
+                    b.HasOne("Ecommerce.Models.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Ecommerce.Models.Models.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Ecommerce.Models.Models.Product", b =>

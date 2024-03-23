@@ -1,7 +1,9 @@
-using Ecommerce.DataAccess.IRepository;
+﻿using Ecommerce.DataAccess.IRepository;
 using Ecommerce.Models.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace EcommerceWeb.Areas.Customer.Controllers
 {
@@ -28,7 +30,13 @@ namespace EcommerceWeb.Areas.Customer.Controllers
             Product product = _unitOfWork._ProductRepository.Get(x => x.Id == id);
             if (product != null)
             {
-                return View(product);
+                Cart cart = new Cart()
+                {
+                    Product = product,
+                    Count = 1,
+                    ProductId = id
+                };
+                return View(cart);
             }
             return View("NotFound");
         }
@@ -42,6 +50,25 @@ namespace EcommerceWeb.Areas.Customer.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult Details(Cart cart)
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+            var userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            // phải map sang obj khác nếu không bị lỗi: Cannot insert explicit value for identity column in table 'Carts' when IDENTITY_INSERT is set to OFF.
+            var data = new Cart()
+            {
+                Count = cart.Count,
+                UserId = userId,
+                ProductId = cart.ProductId
+            };
+            _unitOfWork._CartRepository.Add(data);
+            _unitOfWork.Save();
+            return RedirectToAction(nameof(Index));
         }
     }
 }
