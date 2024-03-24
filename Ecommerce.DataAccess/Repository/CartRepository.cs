@@ -9,9 +9,9 @@ namespace Ecommerce.DataAccess.Repository
         public CartRepository(AppDbContext db) : base(db)
         {
         }
-        public override void Update(Cart entity)
-        {
-            base.Update(entity);
-        }
+        //public override void Update(Cart entity)
+        //{
+        //    base.Update(entity);
+        //}
     }
 }

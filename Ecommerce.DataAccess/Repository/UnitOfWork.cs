@@ -10,6 +10,8 @@ namespace Ecommerce.DataAccess.Repository
         public ICompanyRepository _CompanyRepository { get; private set; }
         public ICartRepository _CartRepository { get; private set; }
         public IAppUserRepository _AppUserRepository { get; private set; }
+        public IOrderHeaderRepository _OrderHeaderRepository { get; private set; }
+        public IOrderDetailRepository _OrderDetailRepository { get; private set; }
 
         private readonly AppDbContext _db;
         public UnitOfWork(AppDbContext db)
@@ -20,6 +22,8 @@ namespace Ecommerce.DataAccess.Repository
             _CompanyRepository = new CompanyRepository(_db);
             _CartRepository = new CartRepository(_db);
             _AppUserRepository = new AppUserRepository(_db);
+            _OrderDetailRepository = new OrderDetailRepository(_db);
+            _OrderHeaderRepository = new OrderHeaderRepository(_db);
         }
         public void Save()
         {

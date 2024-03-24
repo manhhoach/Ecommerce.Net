@@ -59,15 +59,26 @@ namespace EcommerceWeb.Areas.Customer.Controllers
             var identity = (ClaimsIdentity)User.Identity;
             var userId = identity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            // phải map sang obj khác nếu không bị lỗi: Cannot insert explicit value for identity column in table 'Carts' when IDENTITY_INSERT is set to OFF.
-            var data = new Cart()
+            var existedCart = _unitOfWork._CartRepository.Get(x => x.UserId == userId && x.ProductId == cart.ProductId);
+            if (existedCart != null)
             {
-                Count = cart.Count,
-                UserId = userId,
-                ProductId = cart.ProductId
-            };
-            _unitOfWork._CartRepository.Add(data);
+                existedCart.Count += cart.Count;
+                _unitOfWork._CartRepository.Update(existedCart);
+            }
+            else
+            {
+                // phải map sang obj khác nếu không bị lỗi: Cannot insert explicit value for identity column in table 'Carts' when IDENTITY_INSERT is set to OFF.
+                var data = new Cart()
+                {
+                    Count = cart.Count,
+                    UserId = userId,
+                    ProductId = cart.ProductId
+                };
+                _unitOfWork._CartRepository.Add(data);
+
+            }
             _unitOfWork.Save();
+            TempData["success"] = "Add to cart successfully";
             return RedirectToAction(nameof(Index));
         }
     }

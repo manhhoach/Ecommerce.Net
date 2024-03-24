@@ -34,14 +34,42 @@ namespace Ecommerce.DataAccess.Repository
             _dbSet.RemoveRange(entities);
         }
 
-        public virtual T Get(Expression<Func<T, bool>> filter)
+        public virtual T Get(Expression<Func<T, bool>>? filter, string? properties = null, bool isTracked = false)
         {
-            return _dbSet.Where(filter).FirstOrDefault();
+            IQueryable<T> query = _dbSet;
+            if (!isTracked)
+            {
+                query = query.AsNoTracking(); // _dbSet.AsNoTracking().Where(filter).FirstOrDefault();
+            }
+            if (!string.IsNullOrEmpty(properties))
+            {
+                foreach (string prop in properties.Split(","))
+                {
+                    query = query.Include(prop);
+                }
+            }
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+            return query.FirstOrDefault();
         }
 
-        public virtual IEnumerable<T> GetAll()
+        public virtual IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter, string? properties = null)
         {
-            return _dbSet.ToList();
+            IQueryable<T> query = _dbSet;
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+            if (!string.IsNullOrEmpty(properties))
+            {
+                foreach (string prop in properties.Split(","))
+                {
+                    query = query.Include(prop);
+                }
+            }
+            return query.ToList();
         }
 
         public virtual void Update(T entity)

@@ -14,7 +14,7 @@ namespace Ecommerce.DataAccess.Repository
             _db = db;
         }
 
-        public override IEnumerable<Product> GetAll()
+        public override IEnumerable<Product> GetAll(Expression<Func<Product, bool>>? filter, string? prop)
         {
             return _db.Products.Include(x => x.Category).Select(e => new Product()
             {
@@ -28,7 +28,7 @@ namespace Ecommerce.DataAccess.Repository
             }).ToList();
         }
 
-        public override Product Get(Expression<Func<Product, bool>> filter)
+        public override Product Get(Expression<Func<Product, bool>>? filter, string? prop, bool isTracked = false)
         {
             return _db.Products.Where(filter).Include(x => x.Category).Select(e => new Product()
             {

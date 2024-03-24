@@ -4,8 +4,8 @@ namespace Ecommerce.DataAccess.IRepository
 {
     public interface IRepository<T> where T : class
     {
-        IEnumerable<T> GetAll();
-        T Get(Expression<Func<T, bool>> filter);
+        IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? properties = null);
+        T Get(Expression<Func<T, bool>>? filter = null, string? properties = null, bool isTracked = false);
         void Add(T entity);
         void AddRange(IEnumerable<T> entities);
         void Update(T entity);
