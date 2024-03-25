@@ -1,4 +1,4 @@
-﻿@model ShoppingCartVM
+﻿@model Ecommerce.Models.ViewModels.CartVM
 
 
 <form method="post">
@@ -87,7 +87,7 @@
 								<span class="text-info">Order Summary:</span>
 							</h4>
 							<ul class="list-group mb-3">
-								@foreach(var details in Model.ShoppingCartList){
+								@foreach(var details in Model.Carts){
 								<li class="list-group-item d-flex justify-content-between">
 									<div>
 											<h6 class="my-0">@details.Product.Title</h6>

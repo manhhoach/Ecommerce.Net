@@ -123,12 +123,12 @@ namespace EcommerceWeb.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            if (!_roleManager.RoleExistsAsync(SD.Customer).Result)
+            if (!_roleManager.RoleExistsAsync(RoleConstants.Customer).Result)
             {
-                await _roleManager.CreateAsync(new IdentityRole(SD.Admin));
-                await _roleManager.CreateAsync(new IdentityRole(SD.Customer));
-                await _roleManager.CreateAsync(new IdentityRole(SD.Employee));
-                await _roleManager.CreateAsync(new IdentityRole(SD.Company));
+                await _roleManager.CreateAsync(new IdentityRole(RoleConstants.Admin));
+                await _roleManager.CreateAsync(new IdentityRole(RoleConstants.Customer));
+                await _roleManager.CreateAsync(new IdentityRole(RoleConstants.Employee));
+                await _roleManager.CreateAsync(new IdentityRole(RoleConstants.Company));
             }
             Input = new InputModel()
             {
@@ -156,7 +156,7 @@ namespace EcommerceWeb.Areas.Identity.Pages.Account
                 user.StreetAddress = Input.StreetAddress;
                 user.City = Input.City;
                 user.Name = Input.Name;
-                if (Input.Role == SD.Company)
+                if (Input.Role == RoleConstants.Company)
                 {
                     user.CompanyId = Input.CompanyId;
                 }
@@ -167,7 +167,7 @@ namespace EcommerceWeb.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-                    string role = !string.IsNullOrEmpty(Input.Role) ? Input.Role : SD.Customer;
+                    string role = !string.IsNullOrEmpty(Input.Role) ? Input.Role : RoleConstants.Customer;
 
                     await _userManager.AddToRoleAsync(user, role);
 
@@ -178,7 +178,7 @@ namespace EcommerceWeb.Areas.Identity.Pages.Account
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                        values: new { area = "Identity", userId, code, returnUrl },
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
@@ -186,7 +186,7 @@ namespace EcommerceWeb.Areas.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
                     }
                     else
                     {

@@ -9,7 +9,7 @@ namespace Ecommerce.Models.Models
         [Key]
         public int Id { get; set; }
 
-        public required string UserId { get; set; }
+        public string UserId { get; set; }
         [ForeignKey("UserId")]
         [ValidateNever]
         public AppUser? User { get; set; }
@@ -34,16 +34,16 @@ namespace Ecommerce.Models.Models
         public string? PaymentIntentId { get; set; }
 
         [Required]
-        public required string Name { get; set; }
+        public string Name { get; set; }
         [Required]
-        public required string State { get; set; }
+        public string State { get; set; }
         [Required]
-        public required string City { get; set; }
+        public string City { get; set; }
         [Required]
-        public required string StreetAddress { get; set; }
+        public string StreetAddress { get; set; }
         [Required]
-        public required string PostalCode { get; set; }
+        public string PostalCode { get; set; }
         [Required]
-        public required string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }

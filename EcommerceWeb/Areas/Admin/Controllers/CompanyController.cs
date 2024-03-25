@@ -7,14 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace EcommerceWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = SD.Admin)]
-    public class CompanyController : Controller
+    [Authorize(Roles = RoleConstants.Admin)]
+    public class CompanyController(IUnitOfWork unitOfWork) : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public CompanyController(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
         public IActionResult Index()
         {
             List<Company> objCompanyList = _unitOfWork._CompanyRepository.GetAll().ToList();
